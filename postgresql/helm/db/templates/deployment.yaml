@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.image }}
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data-volume
+      volumes:
+        - name: postgres-data-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-volume-claim

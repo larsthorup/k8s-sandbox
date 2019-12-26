@@ -1,0 +1,17 @@
+# image is the name of the docker image
+image: postgres:12.1
+
+# adminUserName is the name of the postgresql admin user
+adminUserName: admin
+
+# capacity is the size of the persistant volume
+capacity: 1Gi
+
+# containerPort is the port exposed by postgresql
+containerPort: 5432
+
+# localPort is the port used to access postgresql when deployed locally
+localPort: 30032
+
+# publicPort is the port used to access postgresql when deployed in the cloud
+publicPort: 5432
