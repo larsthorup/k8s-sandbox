@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-smoke-test"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  template:
+    spec:
+      containers:
+        - name: main
+          image: {{ .Values.image }}
+          env:
+            - name: PGHOST
+              value: {{ .Release.Name }}-svc
+            - name: PGPORT
+              value: "{{ .Values.containerPort }}"
+            - name: PGDATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-config
+                  key: POSTGRES_DB
+            - name: PGUSER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-config
+                  key: POSTGRES_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: POSTGRES_PASSWORD
+          command: ["sh", "-c"]
+          args:
+            - pg_isready;
+              export ACTUAL=`psql --tuples-only --no-align --command "SELECT count(*) FROM pg_catalog.pg_namespace where nspname='public'"`;
+              echo $ACTUAL;
+              test "$ACTUAL" = 1;
+              echo User $PGUSER can connect to database $PGDATABASE;
+      restartPolicy: Never
