@@ -4,6 +4,9 @@ image: postgres:12.1
 # adminUserName is the name of the postgresql admin user
 adminUserName: admin
 
+# migrateUserName is the name of the postgresql migrate user
+migrateUserName: migrate
+
 # capacity is the size of the persistant volume
 capacity: 1Gi
 

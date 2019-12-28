@@ -39,7 +39,6 @@ For demo purposes the passphrase for decrypting the secrets is stated below. For
 ## ToDo
 
 * PostgreSQL schema
-  * ensure users: "migrate", "service"
   * credentials: passwords & certificates
   * migrate application schema
 * Monitoring

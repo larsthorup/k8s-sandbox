@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-smoke-test"
+  name: "{{ .Release.Name }}-role-migrate-job"
   annotations:
-    "helm.sh/hook": test
+    "helm.sh/hook": post-install
 spec:
   template:
     spec:
@@ -30,15 +30,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-secret
                   key: POSTGRES_PASSWORD
+            # TODO: MIGRATE_PASSWORD
           command: ["sh", "-c"]
           args:
-            - pg_isready;
-              export ACTUAL=`psql --tuples-only --no-align --command "SELECT count(*) FROM pg_catalog.pg_namespace where nspname='public'"` &&
-              echo $ACTUAL &&
-              test "$ACTUAL" = 1 &&
-              echo User "$PGUSER" can connect to database "$PGDATABASE" &&
-              export ACTUAL=`psql --tuples-only --no-align --command "SELECT count(*) FROM pg_roles where rolname='{{ .Values.migrateUserName }}' and not rolsuper"` &&
-              echo $ACTUAL &&
-              test "$ACTUAL" = 1 &&
-              echo Non-superuser role "{{ .Values.migrateUserName }}" exists in database "$PGDATABASE"
+            - psql --command "
+              create role {{ .Values.migrateUserName }} with password 'migrate' createrole
+              " &&
+              echo Non-superuser role "{{ .Values.migrateUserName }}" created in database "$PGDATABASE"
       restartPolicy: Never
