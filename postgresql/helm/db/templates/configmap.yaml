@@ -7,4 +7,3 @@ metadata:
 data:
   POSTGRES_DB: {{ .Release.Name }}
   POSTGRES_USER: {{ .Values.adminUserName }}
-  POSTGRES_PASSWORD: admin # ToDo: secret
