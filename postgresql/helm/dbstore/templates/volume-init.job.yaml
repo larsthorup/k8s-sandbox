@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-volume-init-job"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: main
+          image: busybox:latest
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data-volume
+          command: ["sh", "-c"]
+          args:
+            - ls -la /var/lib/postgresql/data &&
+              rm -rf /var/lib/postgresql/data/*
+      volumes:
+        - name: postgres-data-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-volume-claim

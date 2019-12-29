@@ -1,0 +1,2 @@
+# capacity is the size of the persistent volume
+capacity: 1Gi

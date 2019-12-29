@@ -1,3 +1,6 @@
+# name of volume claim to use for storage
+volumeClaimName: dbstore-volume-claim
+
 # image is the name of the docker image
 image: postgres:12.1
 
@@ -6,9 +9,6 @@ adminUserName: admin
 
 # migrateUserName is the name of the postgresql migrate user
 migrateUserName: migrate
-
-# capacity is the size of the persistant volume
-capacity: 1Gi
 
 # containerPort is the port exposed by postgresql
 containerPort: 5432

@@ -1,11 +1,26 @@
 # PostgreSQL on Kubernetes
 
-Here we define a Helm Chart to ensure a running PostgreSQL service with a single blank database instance into the current Kubernetes context.
+Here we define Helm charts to ensure a running PostgreSQL service with a single blank database instance stored on a blank volume into the current Kubernetes context.
 
-The settings (non-secret) for the PostgreSQL service are in [values.yaml](./helm/db/values.yaml). The encrypted secret settings (credentials) are in [secrets.yaml.enc](./helm/db/secrets.yaml.enc)
+The settings for the volume is in [dbstore/values.yaml](./helm/dbstore/values.yaml).
+
+The settings (non-secret) for the PostgreSQL service are in [db/values.yaml](./helm/db/values.yaml). The encrypted secret settings (credentials) are in [db/secrets.yaml.enc](./helm/db/secrets.yaml.enc)
 
 For demo purposes the passphrase for decrypting the secrets is stated below. For production purposes, always keep secrets secret.
 
+
+## Create and destroy volume
+
+    cd helm
+
+    # install volume
+    helm install -f ./dbstore/values.yaml dbstore ./dbstore --wait --debug
+
+    # uninstall volume
+    helm uninstall dbstore
+
+
+## Start and stop PostgreSQL service
 
     # prepare environment
     export PASSPHRASE=MasterKey1
@@ -36,10 +51,26 @@ For demo purposes the passphrase for decrypting the secrets is stated below. For
     # encrypt secrets for commit
     openssl enc -pbkdf2 -salt -a -in ./db/secrets.yaml -out ./db/secrets.yaml.enc -k $PASSPHRASE
 
-## ToDo
 
-* Kubernetes cluster maintenance
-  * Secret rotation
-  * Upgrade (postgres image version, disk size)
-* Persistance
-  * Keep volume in production?
+## ToDo: Rotate admin password
+
+* Upgrade service to use new admin password
+
+
+## ToDo: Upgrade postgres image version
+
+* Upgrade service to use new image version
+
+
+## ToDo: Upgrade volume size
+
+* Create new volume
+* Stop service
+* Copy data from old volume
+* Upgrade service to use new volume
+* Delete old volume
+
+
+## ToDo: Rotate user password
+
+* Migrate user password

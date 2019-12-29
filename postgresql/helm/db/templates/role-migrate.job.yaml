@@ -4,6 +4,7 @@ metadata:
   name: "{{ .Release.Name }}-role-migrate-job"
   annotations:
     "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   backoffLimit: 0
   template:
