@@ -1,7 +1,7 @@
 helm uninstall db
 
 echo Waiting for volumes to disappear
-sleep 10
+sleep 15
 
 openssl enc -pbkdf2 -salt -d -a -in ./db/secrets.yaml.enc -k $PASSPHRASE | helm install -f - -f ./db/values.yaml db ./db --wait --debug
 

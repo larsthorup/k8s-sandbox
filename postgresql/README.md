@@ -1,6 +1,6 @@
 # PostgreSQL on Kubernetes
 
-Here we define a Helm Chart to ensure a running PostgreSQL service with a single database instance into the current Kubernetes context.
+Here we define a Helm Chart to ensure a running PostgreSQL service with a single blank database instance into the current Kubernetes context.
 
 The settings (non-secret) for the PostgreSQL service are in [values.yaml](./helm/db/values.yaml). The encrypted secret settings (credentials) are in [secrets.yaml.enc](./helm/db/secrets.yaml.enc)
 
@@ -38,10 +38,8 @@ For demo purposes the passphrase for decrypting the secrets is stated below. For
 
 ## ToDo
 
-* PostgreSQL schema
-  * credentials: passwords & certificates
-  * migrate application schema
-* Monitoring
 * Kubernetes cluster maintenance
   * Secret rotation
   * Upgrade (postgres image version, disk size)
+* Persistance
+  * Keep volume in production?
